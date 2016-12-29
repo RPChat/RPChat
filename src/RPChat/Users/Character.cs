@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RPChat
+namespace RPChat.Users
 {
-    public class Program
+    public class Character
     {
-        public static void Main(string[] args)
-        {
-        }
     }
 }
