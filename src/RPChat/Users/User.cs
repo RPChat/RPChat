@@ -6,7 +6,7 @@ namespace RPChat.Users
 {
     public class User
     {
-        public List<Character> Characters { get; set; }
+        public HashSet<Character> Characters { get; set; }
         public Identity Identity { get; set; }
     }
 }
