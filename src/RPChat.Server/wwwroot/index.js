@@ -1,6 +1,6 @@
 ﻿function write(s, output) {
     var p = document.createElement("p");
-    p.innerHTML = s;
+    p.textContent = s;
     output.appendChild(p);
 }
 
