@@ -23,8 +23,12 @@ function doConnect(output) {
                 event.preventDefault();
             }
             var chatinput = document.getElementById("chatinput");
-            socket.send(chatinput.value);
-            chatinput.value = "";
+            var message = chatinput.value;
+            if (message !== "")
+            {
+                socket.send(message);
+                chatinput.value = "";
+            }
             return false;
         }, false);
     };
