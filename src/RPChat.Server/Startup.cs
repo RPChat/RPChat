@@ -28,7 +28,8 @@ namespace RPChat.Server
             app.Map("/ws", app_ =>
             {
                 app_.UseWebSockets();
-                app_.Use(AcceptConnection);
+                var room = new GlobalChatRoom();
+                app_.Use((context, n) => AcceptConnection(context, n, room));
             });
         }
 
@@ -38,14 +39,14 @@ namespace RPChat.Server
         {
         }
 
-        private async static Task AcceptConnection(HttpContext context, Func<Task> n)
+        private async static Task AcceptConnection(HttpContext context, Func<Task> n, GlobalChatRoom room)
         {
             if (!context.WebSockets.IsWebSocketRequest)
             {
                 return;
             }
             var socket = await context.WebSockets.AcceptWebSocketAsync();
-            var handler = new Connection(socket);
+            var handler = new Connection(socket, listener => room.Join(listener));
             await handler.Serve();
         }
     }
