@@ -16,11 +16,7 @@ function doConnect(output) {
     var wasOpen = false;
     socket.onopen = function (e) {
         wasOpen = true;
-        write("opened " + uri, output);
-        var text = "test echo";
-        write("Sending: " + text, output);
-        socket.send(text);
-
+        write("Connected to " + uri, output);
         var chatform = document.getElementById("chatform");
         chatform.addEventListener("submit", function (event) {
             if (event.preventDefault) {
