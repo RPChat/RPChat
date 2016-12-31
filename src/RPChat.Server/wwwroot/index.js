@@ -13,7 +13,9 @@ function write(s, output) {
 function doConnect(output) {
     var uri = "ws://" + window.location.host + "/ws";
     var socket = new WebSocket(uri);
+    var wasOpen = false;
     socket.onopen = function (e) {
+        wasOpen = true;
         write("opened " + uri, output);
         var text = "test echo";
         write("Sending: " + text, output);
@@ -31,13 +33,13 @@ function doConnect(output) {
         }, false);
     };
     socket.onclose = function (e) {
-        write("closed", output);
+        write(wasOpen ? "Disconnected" : "Could not connect", output);
+        setTimeout(function () {
+            doConnect(output);
+        }, 5000);
     };
     socket.onmessage = function (e) {
         write("Received: " + e.data, output);
-    };
-    socket.onerror = function (e) {
-        write("Error: " + e.data, output);
     };
 }
 
