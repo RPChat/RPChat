@@ -23,7 +23,11 @@ namespace RPChat.Server
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
-            app.Map("/ws", SocketHandler.Map);
+            app.Map("/ws", app_ =>
+            {
+                app_.UseWebSockets();
+                app_.Use(SocketHandler.Accept);
+            });
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
