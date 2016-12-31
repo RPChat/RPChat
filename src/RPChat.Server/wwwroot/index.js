@@ -1,7 +1,9 @@
 ﻿function write(s, output) {
-    var p = document.createElement("p");
+    var p = document.createElement("li");
     p.textContent = s;
     output.appendChild(p);
+    var chatlogscroll = document.getElementById("chatlogscroll");
+    chatlogscroll.scrollTop = chatlogscroll.scrollHeight - chatlogscroll.clientHeight;
 }
 
 function doConnect(output) {
@@ -12,13 +14,23 @@ function doConnect(output) {
         var text = "test echo";
         write("Sending: " + text, output);
         socket.send(text);
+
+        var chatform = document.getElementById("chatform");
+        chatform.addEventListener("submit", function (event) {
+            if (event.preventDefault) {
+                event.preventDefault();
+            }
+            var chatinput = document.getElementById("chatinput");
+            socket.send(chatinput.value);
+            chatinput.value = "";
+            return false;
+        }, false);
     };
     socket.onclose = function (e) {
         write("closed", output);
     };
     socket.onmessage = function (e) {
         write("Received: " + e.data, output);
-        socket.close();
     };
     socket.onerror = function (e) {
         write("Error: " + e.data, output);
@@ -26,6 +38,6 @@ function doConnect(output) {
 }
 
 window.onload = function () {
-    output = document.getElementById("output");
-    doConnect(output);
+    var chatlog = document.getElementById("chatlog");
+    doConnect(chatlog);
 };
