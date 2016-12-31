@@ -1,9 +1,13 @@
-﻿function write(s, output) {
+﻿var scrollDown = function () {
+    var chatlogscroll = document.getElementById("chatlogscroll");
+    chatlogscroll.scrollTop = chatlogscroll.scrollHeight - chatlogscroll.clientHeight;
+};
+
+function write(s, output) {
     var p = document.createElement("li");
     p.textContent = s;
     output.appendChild(p);
-    var chatlogscroll = document.getElementById("chatlogscroll");
-    chatlogscroll.scrollTop = chatlogscroll.scrollHeight - chatlogscroll.clientHeight;
+    scrollDown();
 }
 
 function doConnect(output) {
@@ -40,4 +44,5 @@ function doConnect(output) {
 window.onload = function () {
     var chatlog = document.getElementById("chatlog");
     doConnect(chatlog);
+    scrollDown();
 };
