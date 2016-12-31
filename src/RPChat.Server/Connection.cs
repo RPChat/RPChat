@@ -9,27 +9,16 @@ using System.Threading.Tasks;
 
 namespace RPChat.Server
 {
-    public class SocketHandler
+    public class Connection
     {
         private WebSocket socket;
 
-        private SocketHandler(WebSocket socket)
+        public Connection(WebSocket socket)
         {
             this.socket = socket;
         }
         
-        public static async Task Accept(HttpContext context, Func<Task> n)
-        {
-            if (!context.WebSockets.IsWebSocketRequest)
-            {
-                return;
-            }
-            var socket = await context.WebSockets.AcceptWebSocketAsync();
-            var handler = new SocketHandler(socket);
-            await handler.EchoLoop();
-        }
-
-        private async Task EchoLoop()
+        public async Task Serve()
         {
             var buffer = new byte[4096];
             var segment = new ArraySegment<byte>(buffer);
