@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RPChat.Server
+namespace RPChat
 {
-    public interface IChatRoomListener
+    public class Server
     {
-        Task OnMessage(string message);
     }
 }

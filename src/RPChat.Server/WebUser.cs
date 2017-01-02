@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
+﻿using RPChat.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,26 +7,18 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RPChat.Server
+namespace RPChat.Web
 {
-    public class Connection : IChatRoomListener
+    public class WebUser : User
     {
         private readonly WebSocket socket;
-        private readonly IChatRoomMembership membership;
 
-        public Connection(WebSocket socket, Func<IChatRoomListener,IChatRoomMembership> join)
+        public WebUser(WebSocket socket)
         {
             this.socket = socket;
-            this.membership = join(this);
         }
 
-        public async Task OnMessage(string message)
-        {
-            var outgoing = new ArraySegment<byte>(Encoding.UTF8.GetBytes(message));
-            await socket.SendAsync(outgoing, WebSocketMessageType.Text, true, CancellationToken.None);
-        }
-        
-        public async Task Serve()
+        public async Task Receive()
         {
             var buffer = new byte[4096];
             var segment = new ArraySegment<byte>(buffer);
@@ -37,13 +28,24 @@ namespace RPChat.Server
                 {
                     var incoming = await socket.ReceiveAsync(segment, CancellationToken.None);
                     var message = Encoding.UTF8.GetString(buffer, 0, incoming.Count);
-                    await membership.Post(message);
+
+                    ReceivedMessage?.Invoke(this, message);
                 }
             }
             finally
             {
-                membership.Leave();
+                Disconnected?.Invoke(this);
             }
         }
+
+        public override async Task SendMessage(Character character, string message)
+        {
+            var outgoing = new ArraySegment<byte>(Encoding.UTF8.GetBytes($"{character.Name}: {message}"));
+            await socket.SendAsync(outgoing, WebSocketMessageType.Text, true, CancellationToken.None);
+        }
+
+        public event Action<User> Disconnected;
+
+        public event Action<User, string> ReceivedMessage;
     }
 }

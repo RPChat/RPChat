@@ -2,13 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace RPChat
 {
     /// <summary>
     /// Represents an arbitrary conversation.
     /// </summary>
-    public class Room
+    public abstract class Room
     {
         /// <summary>
         /// Gets which characters are in the room.
@@ -34,6 +35,10 @@ namespace RPChat
         /// Gets which users are in the room.
         /// </summary>
         public HashSet<User> Users { get; } = new HashSet<User>();
+
+        public abstract Task Leave(User user);
+
+        public abstract Task SendMessage(Character character, string message);
 
         //public IEnumerable<string> Messages { get; set; }
     }
